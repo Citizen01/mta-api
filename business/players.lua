@@ -31,29 +31,36 @@ function getPlayerById( id )
 end
 ----------------------------------------------
 
+function getPlayerEntity( player )
+	return {
+		id = getPlayerId(player),
+		serial = getPlayerSerial(player),
+		version = getPlayerVersion(player),
+		ip = getPlayerIP(player),
+		skin = getElementModel(player),
+		name = getPlayerName(player),
+		accountName = getAccountName(getPlayerAccount(player)),
+		position = getPosition(player),
+		rotation = getRotation(player),
+		interior = getElementInterior(player),
+		dimension = getElementDimension(player),
+		alpha = getElementAlpha(player),
+		ping = getPlayerPing(player),
+		money = getPlayerMoney(player),
+		wantedLevel = getPlayerWantedLevel(player),
+		health = getElementHealth(player),
+		armor = getPedArmor(player),
+		oxygen = getPedOxygenLevel(player)
+	}
+end
+
+----------------------------------------------
+
 function getAllPlayers()
 	local players = {}
 	for k, p in ipairs(getElementsByType("player")) do
-		table.insert(players, {
-			id = getPlayerId(p),
-			serial = getPlayerSerial(p),
-			version = getPlayerVersion(p),
-			ip = getPlayerIP(p),
-			skin = getElementModel(p),
-			name = getPlayerName(p),
-			accountName = getAccountName(getPlayerAccount(p)),
-			position = getPosition(p),
-			rotation = getRotation(p),
-			interior = getElementInterior(p),
-			dimension = getElementDimension(p),
-			alpha = getElementAlpha(p),
-			ping = getPlayerPing(p),
-			money = getPlayerMoney(p),
-			wantedLevel = getPlayerWantedLevel(p),
-			health = getElementHealth(p),
-			armor = getPedArmor(p),
-			oxygen = getPedOxygenLevel(p)
-		})
+		table.insert(players, getPlayerEntity(p))
 	end
+	if #players == 0 then return "[]" end
 	return tostring(json.encode_ordered(players))
 end
