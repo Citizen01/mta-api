@@ -1,39 +1,7 @@
-----------------------------------------------
------------- custom id management ------------
-----------------------------------------------
-local _id = 0
-local players = {}
-
-for k, p in ipairs(getElementsByType("player")) do
-	_id = _id + 1
-	players[_id] = source
-end
-
-addEventHandler("onPlayerJoin", root, function ()
-	_id = _id + 1
-	players[_id] = source
-end)
-
-addEventHandler("onPlayerQuit", root, function ()
-	players[_id] = nil
-	_id = _id - 1
-end)
-
-function getPlayerId( player )
-	if not player or getElementType(player) ~= "player" then return end
-	for i, p in ipairs(players) do
-		if p == player then return i end
-	end
-end
-
-function getPlayerById( id )
-	return players[id]
-end
-----------------------------------------------
 
 function getPlayerEntity( player )
 	return {
-		id = getPlayerId(player),
+		_id = getApiElementID(player),
 		serial = getPlayerSerial(player),
 		version = getPlayerVersion(player),
 		ip = getPlayerIP(player),
@@ -56,11 +24,54 @@ end
 
 ----------------------------------------------
 
-function getAllPlayers()
-	local players = {}
-	for k, p in ipairs(getElementsByType("player")) do
-		table.insert(players, getPlayerEntity(p))
+-- @API("GET", "/players/{id}")
+function getPlayers( form, user )
+	local _players = {}
+	if form.id then
+		local id = tonumber(form.id)
+		if id then
+			local player = getApiElementByID(id)
+			if player then
+				local reason = form.reason or ""
+				return 200, nil, getPlayerEntity(player)
+			else
+				return 404, "Player not found !", nil
+			end
+		else
+			return 400, "Number expected for id parameter !", nil
+		end
+	else
+		for k, p in ipairs(getElementsByType("player")) do
+			table.insert(_players, getPlayerEntity(p))
+		end
 	end
-	if #players == 0 then return "[]" end
-	return tostring(json.encode_ordered(players))
+	
+	if #_players == 0 then return 200, nil, "[]" end
+	return 200, nil, _players
+end
+
+-- @API("POST", "/players/kick")
+function kick( form, user )
+	if form.id then
+		local id = tonumber(form.id)
+		if id then
+			local player = getApiElementByID(id)
+			if player then
+				local reason = form.reason or ""
+				outputServerLog("[API] "..tostring(getPlayerName(player)).." has been kicked by "..tostring(getAccountName(user))..".")
+				local bool = kickPlayer(player, reason)
+				if bool then
+					return 200, nil, ""
+				else
+					return 500, "An error occured !", nil
+				end
+			else
+				return 404, "Player not found !", nil
+			end
+		else
+			return 400, "Number expected for id parameter !", nil
+		end
+	else
+		return 400, "Missing id parameter !", nil
+	end
 end

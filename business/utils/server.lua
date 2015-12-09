@@ -15,3 +15,12 @@ end)
 function getPedOxygenLevel( ped )
 	return _oxygen[ped]
 end
+
+
+----------------------------------------------
+-------- exporting json.encode_ordered -------
+----------------------------------------------
+
+function toOrderedJSON(obj)
+	return json.encode_ordered(obj)
+end
