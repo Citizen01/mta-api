@@ -88,13 +88,16 @@ function ban( form, user )
 	local isUsername = form.username and form.username == "true"
 	local isSerial = form.serial and form.serial == "true" or false
 	local responsiblePlayer = user or nil
+	outputConsole(tostring(var_dump("-v", responsiblePlayer)))
 	local reason = form.reason or ""
-	local secs = secs and tonumber(form.secs) or 0
+	local secs = form.secs and tonumber(form.secs) or 0
 	
-	if banPlayer(player, isIp, isUsername, isSerial, responsiblePlayer, reason, secs) then
-		local time = secs == 0 and "permanently" or tostring(secs).." secs"
-		outputServerLog("[API] "..tostring(getPlayerName(player)).." has been banned by "..tostring(getAccountName(user)).." ("..time..").")
-		return 200, nil, ""
+	local time = secs == 0 and "permanently" or tostring(secs).." secs"
+	local logStr = "[API] "..tostring(getPlayerName(player)).." has been banned by "..tostring(getAccountName(user)).." ("..time..")."
+	
+	if banPlayer(player, isIp, isUsername, isSerial, nil, reason, secs) then
+		outputServerLog(logStr)
+		return 200, nil, nil
 	else
 		return 500, "An error occured !", nil
 	end
