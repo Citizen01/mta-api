@@ -24,4 +24,5 @@
     <!-- exports -->
     <export api="true" function="getPlayers" http="true"></export>
     <export api="true" function="kick" http="true"></export>
+    <export api="true" function="ban" http="true"></export>
 </meta>
