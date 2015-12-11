@@ -13,7 +13,7 @@ addEventHandler("updateOxygenResponse", root, function ( oxygen )
 end)
 
 function getPedOxygenLevel( ped )
-	return _oxygen[ped]
+	return _oxygen[ped] or false
 end
 
 
