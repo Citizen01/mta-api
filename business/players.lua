@@ -8,6 +8,7 @@ function getPlayerEntity( player )
 		dimension = getElementDimension(player),
 		health = getElementHealth(player),
 		interior = getElementInterior(player),
+		inWater = isElementInWater(player),
 		ip = getPlayerIP(player),
 		isNametagShowing = isPlayerNametagShowing(player),
 		hasJetpack = doesPedHaveJetPack(player),

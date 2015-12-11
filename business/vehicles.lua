@@ -6,6 +6,7 @@ function getVehicleEntity( veh )
 		dimension = getElementDimension(veh),
 		health = getElementHealth(veh),
 		interior = getElementInterior(veh),
+		inWater = isElementInWater(veh),
 		isDamageProof = isVehicleDamageProof(veh),
 		isLocked = isVehicleLocked(veh),
 		isFuelTankExplodable = isVehicleFuelTankExplodable(veh),
