@@ -7,7 +7,7 @@ function getPlayerEntity( player )
 		ip = getPlayerIP(player),
 		skin = getElementModel(player),
 		name = getPlayerName(player),
-		accountName = getAccountName(getPlayerAccount(player)),
+		account = getAccountName(getPlayerAccount(player)),
 		position = getPosition(player),
 		rotation = getRotation(player),
 		interior = getElementInterior(player),
@@ -18,7 +18,10 @@ function getPlayerEntity( player )
 		wantedLevel = getPlayerWantedLevel(player),
 		health = getElementHealth(player),
 		armor = getPedArmor(player),
-		oxygen = getPedOxygenLevel(player)
+		oxygen = getPedOxygenLevel(player),
+		team = (function () local t = getPlayerTeam(player); return t and getTeamName(t) end)(),
+		vehicle = (function () local v = getPedOccupiedVehicle(player); return v and getElementModel(v) end)(),
+		weapon = getPedWeapon(player)
 	}
 end
 
