@@ -31,6 +31,7 @@ function executeFunction( func, form )
 end
 
 function sendResponse(code, errorMsg, result)
+	httpSetResponseHeader("Content-Type", "application/json")
 	httpWrite( result )
 end
 
