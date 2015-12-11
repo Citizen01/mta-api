@@ -14,6 +14,7 @@
     <!-- ROUTES -->
     <script src="business/elements.lua" type="server" />
     <script src="business/players.lua" type="server" />
+    <script src="business/vehicles.lua" type="server" />
     
     <html src="index.html" />
     <html src="v1" />
@@ -25,4 +26,5 @@
     <export api="true" function="getPlayers" http="true"></export>
     <export api="true" function="kick" http="true"></export>
     <export api="true" function="ban" http="true"></export>
+    <export api="true" function="getVehicles" http="true"></export>
 </meta>
