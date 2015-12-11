@@ -9,9 +9,11 @@ function getPlayerEntity( player )
 		health = getElementHealth(player),
 		interior = getElementInterior(player),
 		ip = getPlayerIP(player),
-		jetpack = doesPedHaveJetPack(player),
+		isNametagShowing = isPlayerNametagShowing(player),
+		hasJetpack = doesPedHaveJetPack(player),
 		money = getPlayerMoney(player),
 		name = getPlayerName(player),
+		nameTag = getPlayerNametagText(player),
 		oxygen = getPedOxygenLevel(player),
 		ping = getPlayerPing(player),
 		position = getPosition(player),
@@ -35,7 +37,7 @@ function getPlayers( form, user )
 		local id = tonumber(form.id)
 		if id then
 			local player = getApiElementByID(id)
-			if player then
+			if player and getElementType(player) == "player" then
 				local reason = form.reason or ""
 				return 200, nil, getPlayerEntity(player)
 			else
