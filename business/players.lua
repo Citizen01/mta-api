@@ -91,8 +91,7 @@ function ban( form, user )
 	local isIp = form.ip and form.ip == "true"
 	local isUsername = form.username and form.username == "true"
 	local isSerial = form.serial and form.serial == "true" or false
-	local responsiblePlayer = user or nil
-	outputConsole(tostring(var_dump("-v", responsiblePlayer)))
+	local responsiblePlayer = user or nil -- TODO: Not used for now
 	local reason = form.reason or ""
 	local secs = form.secs and tonumber(form.secs) or 0
 	
