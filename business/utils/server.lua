@@ -16,6 +16,12 @@ function getPedOxygenLevel( ped )
 	return _oxygen[ped] or false
 end
 
+local _givePedJetPack = givePedJetPack
+givePedJetPack = function ( player )
+	_givePedJetPack( player )
+	setTimer(_givePedJetPack, 50, 1, player )
+	return true
+end
 
 ----------------------------------------------
 -------- exporting json.encode_ordered -------
