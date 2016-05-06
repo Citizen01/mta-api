@@ -26,5 +26,6 @@
     <export api="true" function="getPlayers" http="true"></export>
     <export api="true" function="kick" http="true"></export>
     <export api="true" function="ban" http="true"></export>
+    <export api="true" function="updatePlayer" http="true"></export>
     <export api="true" function="getVehicles" http="true"></export>
 </meta>

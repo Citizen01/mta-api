@@ -12,11 +12,11 @@ function processRequest( url, requestHeaders, form )
 			executeFunction(func, form)
 		else
 			-- error bad parameter
-			outputDebugString("Bad parameter !", 1)
+			outputDebugString("[API] Bad parameter !", 1)
 		end
-	else 
+	else
 		-- error bad request
-		outputDebugString("Bad request !", 1)
+		outputDebugString("[API] Bad request !", 1)
 	end
 end
 
@@ -24,13 +24,16 @@ function executeFunction( func, form )
 	for key, value in pairs(form) do
 		form[key] = urlDecode(value)
 	end
-	
-	local code, errorMsg, result = call(getThisResource(), func, form, user)
+
+	local code, result, errorMsg = call(getThisResource(), func, form, user)
 	result = call(getThisResource(), "toOrderedJSON", result)
-	sendResponse(code, errorMsg, result)
+	sendResponse(code, result, errorMsg)
 end
 
-function sendResponse(code, errorMsg, result)
+function sendResponse(code, result, errorMsg)
+	if errorMsg then
+		outputDebugString("[API] "..tostring(errorMsg), 1)
+	end
 	httpSetResponseHeader("Content-Type", "application/json")
 	httpWrite( result )
 end
@@ -63,7 +66,7 @@ function var_dump(...)
 	local noNames = false
 	local indentation = "\t\t\t\t\t\t"
 	local depth = nil
- 
+
 	local name = nil
 	local output = {}
 	for k,v in ipairs(arg) do
@@ -95,7 +98,7 @@ function var_dump(...)
 			else
 				name = ""
 			end
- 
+
 			local o = ""
 			if type(v) == "string" then
 				table.insert(output,name..type(v).."("..v:len()..") \""..v.."\"")
@@ -124,7 +127,7 @@ function var_dump(...)
 						end
 						local keyString, keyTable = var_dump(newModifiers,key)
 						local valueString, valueTable = var_dump(newModifiers,value)
- 
+
 						if #keyTable == 1 and #valueTable == 1 then
 							table.insert(output,indentation.."["..keyString.."]\t=>\t"..valueString)
 						elseif #keyTable == 1 then

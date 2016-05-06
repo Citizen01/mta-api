@@ -76,12 +76,12 @@ end)
 
 ----------------------------------------------
 
-function getPosition( element )
+function getApiElementPosition( element )
 	local x, y, z = getElementPosition( element )
 	return { x = x, y = y, z = z }
 end
 
-function getRotation( element )
+function getApiElementRotation( element )
 	local rx, ry, rz = getElementRotation( element )
-	return { rx = rx, ry = ry, rz = rz }
+	return { x = rx, y = ry, z = rz }
 end

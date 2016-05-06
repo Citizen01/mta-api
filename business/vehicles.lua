@@ -16,11 +16,11 @@ function getVehicleEntity( veh )
 		paintjob = getVehiclePaintjob(veh),
 		passengers = (function () local p={}; for k,o in ipairs(getVehicleOccupants(veh)) do table.insert(p,getPlayerEntity(o)) end return p end)(),
 		plateText = getVehiclePlateText(veh),
-		position = getPosition(veh),
-		rotation = getRotation(veh),
+		position = getApiElementPosition(veh),
+		rotation = getApiElementRotation(veh),
 		towing = (function () local t=getVehicleTowedByVehicle(veh) return t and getApiElementID(t) end)(),
 		towedBy = (function () local t=getVehicleTowingVehicle(veh) return t and getApiElementID(t) end)(),
-		-- wheelStates = getRotation(veh),
+		-- wheelStates = getApiElementRotation(veh),
 	}
 end
 
@@ -35,19 +35,19 @@ function getVehicles( form, user )
 			local veh = getApiElementByID(id)
 			if veh then
 				local reason = form.reason or ""
-				return 200, nil, getVehicleEntity(veh)
+				return 200, getVehicleEntity(veh)
 			else
-				return 404, "Player not found !", nil
+				return 404, nil, "Player not found !"
 			end
 		else
-			return 400, "Number expected for id parameter !", nil
+			return 400, nil, "Number expected for id parameter !"
 		end
 	else
 		for k, v in ipairs(getElementsByType("vehicle")) do
 			table.insert(_vehs, getVehicleEntity(v))
 		end
 	end
-	
-	if #_vehs == 0 then return 200, nil, "[]" end
-	return 200, nil, _vehs
+
+	if #_vehs == 0 then return 200, "[]" end
+	return 200, _vehs
 end
