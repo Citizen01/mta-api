@@ -33,11 +33,12 @@ function buildFuncMapping()
 			_funcMap[r.m][r.c][r.f or "default"] = r.fn
 		end
 	end
+	-- var_dump("-v", _funcMap)
 end
 
 function buildRoutes()
 	-- outputConsole("-- buildRoutes --")
-	
+
 	local routes = getApiRoutesFromScripts()
 	for k, route in ipairs(routes) do
 		addRoute(route.path, route.method, route.funcName)
@@ -48,11 +49,11 @@ end
 
 function getApiRoutesFromScripts()
 	local apiRoutes = {path, method, funcName}
-	
+
 	local sScripts = getServerScripts()
 	if #sScripts <= 0 then return apiRoutes end
 	-- var_dump("-v", sScripts)
-	
+
 	for k, script in ipairs(sScripts) do
 		local file = fileOpen(script, true)
 		if file then
@@ -62,7 +63,7 @@ function getApiRoutesFromScripts()
 			end
 
 			local lines = split(buffer, "\n")
-			
+
 			local tmp = nil
 			for k, line in ipairs(lines) do
 				if tmp == nil then
@@ -85,7 +86,7 @@ function getApiRoutesFromScripts()
 			fileClose(file)
 		end
 	end
-	
+
 	return apiRoutes
 end
 
@@ -97,7 +98,7 @@ function getServerScripts()
 	local sScripts = {}
 	local rootNode = xmlLoadFile("meta.xml")
 	if not rootNode then return sScripts end
-	
+
 	local nodes = xmlNodeGetChildren(rootNode)
 	if nodes then
 		for k, node in ipairs(nodes) do
@@ -117,10 +118,10 @@ end
 -- ex: "/players/{id}"
 -- ex: "/players/kick"
 function addRoute( route, method, funcName )
-	local parts = split(route, "/")	
+	local parts = split(route, "/")
 	local category = nil
 	local func = nil
-	
+
 	if #parts >= 1 then
 		category = parts[1]
 		if #parts >= 2 then
@@ -130,7 +131,7 @@ function addRoute( route, method, funcName )
 			end
 		end
 	end
-	
+
 	table.insert(_routes, {m=method, c=category, f=func, fn=funcName})
 	-- outputConsole("Route: m:"..tostring(method).." c:"..tostring(category).." f:"..tostring(func).. " fn:"..tostring(funcName))
 end
@@ -156,7 +157,7 @@ function updateApiExports()
 			xmlNodeSetAttribute(node, "api", "true")
 			xmlNodeSetAttribute(node, "function", r.fn)
 			xmlNodeSetAttribute(node, "http", "true")
-		end 
+		end
 		return xmlSaveFile(rootNode) and xmlUnloadFile(rootNode)
 	end
 end
@@ -175,7 +176,7 @@ function var_dump(...)
 	local noNames = false
 	local indentation = "\t\t\t\t\t\t"
 	local depth = nil
- 
+
 	local name = nil
 	local output = {}
 	for k,v in ipairs(arg) do
@@ -207,7 +208,7 @@ function var_dump(...)
 			else
 				name = ""
 			end
- 
+
 			local o = ""
 			if type(v) == "string" then
 				table.insert(output,name..type(v).."("..v:len()..") \""..v.."\"")
@@ -236,7 +237,7 @@ function var_dump(...)
 						end
 						local keyString, keyTable = var_dump(newModifiers,key)
 						local valueString, valueTable = var_dump(newModifiers,value)
- 
+
 						if #keyTable == 1 and #valueTable == 1 then
 							table.insert(output,indentation.."["..keyString.."]\t=>\t"..valueString)
 						elseif #keyTable == 1 then
