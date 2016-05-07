@@ -42,7 +42,7 @@ function updatePlayerEntity( player, json )
 	if json.nameTag ~= nil then setPlayerNametagText(player, json.nameTag) end
 	--if json.oxygen ~= nil then setPedOxygenLevel(player, json.oxygen) end
 	if json.position ~= nil then setElementPosition(player, json.position.x, json.position.y, json.position.z) end
-	if json.rotation ~= nil then setElementRotation(player, json.rotation.rx, json.rotation.ry, json.rotation.rz) end
+	if json.rotation ~= nil then setElementRotation(player, json.rotation.rx, json.rotation.y, json.rotation.z) end
 	if json.skin ~= nil then setElementModel(player, json.skin) end
 	if json.team ~= nil then local t = getTeamFromName(json.team); local _ = t and setPlayerTeam(player, t) end
 	if json.wantedLevel ~= nil then setPlayerWantedLevel(player, json.wantedLevel) end
