@@ -78,7 +78,7 @@ function updateVehicle( params )
 	local vehicle = getApiElementByID(id)
 	if not vehicle or getElementType(vehicle) ~= "vehicle" then return 404, nil, "Vehicle not found !" end
 
-	if ( not updateVehicleEntity(vehicle, json) )
+	if not updateVehicleEntity(vehicle, json) then
 		return 500, nil, "An error occured while updating the vehicle !"
 	end
 	return 200, ""
