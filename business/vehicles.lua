@@ -18,8 +18,8 @@ function getVehicleEntity( veh )
 		plateText = getVehiclePlateText(veh),
 		position = getApiElementPosition(veh),
 		rotation = getApiElementRotation(veh),
-		towing = (function () local t=getVehicleTowedByVehicle(veh) return t and getApiElementID(t) end)(),
-		towedBy = (function () local t=getVehicleTowingVehicle(veh) return t and getApiElementID(t) end)(),
+		towing = (function () local t=getVehicleTowedByVehicle(veh) return t and getApiElementID(t) or nil end)(),
+		towedBy = (function () local t=getVehicleTowingVehicle(veh) return t and getApiElementID(t) or nil end)(),
 		-- wheelStates = getApiElementRotation(veh),
 	}
 end
