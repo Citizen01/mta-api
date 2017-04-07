@@ -86,8 +86,6 @@ function getPlayers( form, user )
 			table.insert(_players, getPlayerEntity(p))
 		end
 	end
-
-	if #_players == 0 then return 200, "[]" end
 	return 200, _players
 end
 

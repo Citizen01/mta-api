@@ -158,7 +158,7 @@ function simplesave(o, buffer)
 		stringsave(o, buffer);
 	elseif t == "table" then
 		local mt = getmetatable(o);
-		if mt == array_mt then
+		if mt == array_mt or not next(o) then -- An empty table is more likely an empty array
 			arraysave(o, buffer);
 		else
 			tablesave(o, buffer);

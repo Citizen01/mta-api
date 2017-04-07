@@ -64,8 +64,6 @@ function getVehicles( form, user )
 			table.insert(_vehs, getVehicleEntity(v))
 		end
 	end
-
-	if #_vehs == 0 then return 200, "[]" end
 	return 200, _vehs
 end
 
