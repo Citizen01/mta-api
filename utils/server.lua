@@ -30,3 +30,12 @@ end
 function toOrderedJSON(obj)
 	return json.encode_ordered(obj)
 end
+
+----------------------------------------------
+------------- exporting r.execute ------------
+----------------------------------------------
+r = router.new()
+function routerExecute(method, path, ...)
+	outputServerLog("[API] "..tostring(method)..": "..tostring(path) )
+	return r:execute(method, path, ...)
+end

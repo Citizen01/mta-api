@@ -1,57 +1,11 @@
-<*
--------------------------------------------------------------
---------------------- Utility functions ---------------------
--------------------------------------------------------------
-local function toOrderedJSON(json)
-	return call(getThisResource(), "toOrderedJSON", json)
+function getApiElementPosition( elem )
+	local x, y, z = getElementPosition(elem)
+	return {x = x, y = y, z = z}
 end
 
-local function routerExecute(...)
-	return call(getThisResource(), "routerExecute", ...)
-end
-
-local function sendResponse(code, result)
-	httpSetResponseHeader("Content-Type", "application/json")
-	httpWrite( result )
-end
-
-function processRequest( headers, params )
-	outputServerLog( var_dump("-v", params) )
-	local m = headers['x-http-method-override'] or 'GET'
-	local p = params.p
-	local ok, code, result, errorMsg = routerExecute(m, p, params, {account = user})
-	-- outputServerLog( ok and var_dump("-v", ok) or "nil" )
-	-- outputServerLog( code and var_dump("-v", code) or "nil" )
-	-- outputServerLog( result and var_dump("-v", result) or "nil")
-	-- outputServerLog( errorMsg and var_dump("-v", errorMsg) or "nil" )
-	if not ok then -- routerExecute failed to call function
-		errorMsg = code
-		code = 500
-	elseif not result then -- function called but returned nil as result
-		result = errorMsg or "An error occured !"
-	else -- function called and returned a result we have to convert in json
-		result = toOrderedJSON(result)
-	end
-	if errorMsg then outputServerLog("[API] "..tostring(errorMsg), 1) end
-	sendResponse(code, result)
-end
-
----------------- URL encode and decode ----------------
--- http://www.esp8266.com/viewtopic.php?f=21&t=2300
-local function urlDecode(str)
-    str = string.gsub(str, "+", " ")
-    str = string.gsub(str, "%%(%x%x)", function(h) return string.char(tonumber(h, 16)) end)
-    str = string.gsub(str, "\r\n", "\n")
-    return str
-end
-
-local function decodeForm()
-	local f = {}
-	if type(form) ~= "table" then return end
-	for key, value in pairs(form) do
-		f[urlDecode(key)] = urlDecode(value)
-	end
-	form = f
+function getApiElementRotation( elem )
+	local x, y, z = getElementRotation(elem)
+	return {x = x, y = y, z = z}
 end
 
 function var_dump(...)
@@ -178,9 +132,3 @@ function var_dump(...)
 	end
 	return string, output
 end
--------------------------------------------------------------
-
-decodeForm() -- Decode urlencoded form
-processRequest( requestHeaders, form )
-
-*>

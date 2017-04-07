@@ -52,28 +52,15 @@ function updatePlayerEntity( player, json )
 	return true
 end
 
-function lel( thePlayer )
-	givePedJetPack( thePlayer )
-	setElementPosition( thePlayer, 0, 0, 10 )
-end
-addCommandHandler("wut", lel, false, false)
-
-function lel1( thePlayer )
-	givePedJetPack( thePlayer )
-end
-addCommandHandler("jp", lel1, false, false)
-
 ----------------------------------------------
 
--- @API("GET", "/players/{id}")
-function getPlayers( form, user )
+function getPlayers( params, user )
 	local _players = {}
-	if form.id then
-		local id = tonumber(form.id)
+	if params.id then
+		local id = tonumber(params.id)
 		if id then
 			local player = getApiElementByID(id)
 			if player and getElementType(player) == "player" then
-				local reason = form.reason or ""
 				return 200, getPlayerEntity(player)
 			else
 				return 404, nil, "Player not found !"
@@ -88,66 +75,80 @@ function getPlayers( form, user )
 	end
 	return 200, _players
 end
+r:match('GET', '/players', getPlayers)
+r:match('GET', '/players/:id', getPlayers)
 
--- @API("POST", "/players/kick/{id}")
-function kick( form, user )
-	if not form.id then return 400, "Missing id parameter !" end
+function kick( params )
+	if not params.id then return 400, "Missing id parameter !" end
 
-	local id = tonumber(form.id)
+	local id = tonumber(params.id)
 	if not id then return 400, "Number expected for id parameter !" end
 
 	local player = getApiElementByID(id)
 	if not player or getElementType(player) ~= "player" then return 404, nil, "Player not found !" end
 
-	local ip = form.ip and form.ip == "true"
-	local reason = form.reason or ""
+	local ip = params.ip and params.ip == "true"
+	local reason = params.reason or ""
+	local responsiblePlayer = params.account or nil -- TODO: Not used for now
 
-	if kickPlayer(player, reason) then
-		outputServerLog("[API] "..tostring(getPlayerName(player)).." has been kicked by "..tostring(getAccountName(user))..".")
-		return 200, ""
-	else
+	if not kickPlayer(player, reason) then
 		return 500, nil, "An error occured !"
 	end
+
+	local playerName = tostring(getPlayerName(player))
+	local responsibleName = tostring(getAccountName(responsiblePlayer))
+	local reason = (reason ~= "") and ("(Reason: %s)"):format(reason) or ""
+	outputServerLog("[API] "..playerName.." has been kicked by "..responsibleName..reason..".")
+	return 200, ""
 end
+r:match('POST', '/players/kick/:id', kick)
 
--- @API("POST", "/players/ban/{id}")
-function ban( form, user )
-	if not form.id then return 400, nil, "Missing id parameter !" end
+function ban( params )
+	if not params.id then return 400, nil, "Missing id parameter !" end
 
-	local id = tonumber(form.id)
+	local id = tonumber(params.id)
 	if not id then return 400, nil, "Number expected for id parameter !" end
 
 	local player = getApiElementByID(id)
 	if not player or getElementType(player) ~= "player" then return 404, nil, "Player not found !" end
 
-	local isIp = form.ip and form.ip == "true"
-	local isUsername = form.username and form.username == "true"
-	local isSerial = form.serial and form.serial == "true" or false
-	local responsiblePlayer = user or nil -- TODO: Not used for now
-	local reason = form.reason or ""
-	local secs = form.secs and tonumber(form.secs) or 0
+	local isIp = params.ip and params.ip == "true"
+	local isUsername = params.username and params.username == "true"
+	local isSerial = params.serial and params.serial == "true" or false
+	local responsiblePlayer = params.account or nil -- TODO: Not used for now
+	local reason = params.reason or ""
+	local secs = params.secs and tonumber(params.secs) or 0
 
+	if not banPlayer(player, isIp, isUsername, isSerial, nil, reason, secs) then
+		return 500, nil, "An error occured !"
+	end
+
+	local playerName = tostring(getPlayerName(player))
+	local responsibleName = tostring(getAccountName(params.account))
 	local time = secs == 0 and "permanently" or tostring(secs).." secs"
-	local logStr = "[API] "..tostring(getPlayerName(player)).." has been banned by "..tostring(getAccountName(user)).." ("..time..")."
-
-	if banPlayer(player, isIp, isUsername, isSerial, nil, reason, secs) then
-		outputServerLog(logStr)
-		return 200, nil, nil
-	else
-		return 500, nil, "An error occured !"
-	end
+	outputServerLog("[API] "..playerName.." has been banned by "..responsibleName.." ("..time..").")
+	return 200, ""
 end
+r:match('POST', '/players/ban/:id', ban)
 
--- @API("PUT", "/players/update/{id}")
-function updatePlayer( form, user )
-	local json = json.decode(form.json)
-	-- outputConsole(tostring(var_dump("-v", json)))
-
-	local id = tonumber(form.id)
-	if not id then return 400, nil, "Number expected for id parameter !" end
+function updatePlayer( params, user )
+	outputServerLog( params and var_dump("-v", params) or "nil" )
+	local json = json.decode(params.json)
+	outputServerLog( json and var_dump("-v", json) or "nil" )
+	
+	local id = tonumber(params.id)
+	if not id then 
+		return 400, nil, "Number expected for id parameter !"
+	end
 
 	local player = getApiElementByID(id)
-	if not player or getElementType(player) ~= "player" then return 404, nil, "Player not found !" end
+	if not player or getElementType(player) ~= "player" then 
+		return 404, nil, "Player not found !"
+	end
 
-	return updatePlayerEntity(player, json)
+	if not updatePlayerEntity(player, json) then
+		return 500, nil, "An error occured while updating the player !"
+	end
+	return 200, ""
 end
+r:match('PUT', '/players/:id', updatePlayer)

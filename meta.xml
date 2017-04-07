@@ -4,29 +4,22 @@
     
     <include resource="ajax" />
     
-    <!-- SCRIPTS -->
-    <script src="builder.lua" type="server" />
-    <script src="business/utils/json.lua" type="server" />
-    <script src="business/utils/server.lua" type="server" />
-    <script src="business/utils/client.lua" type="client" />
-    <script src="business/utils/shared.lua" type="shared" />
+    <!-- UTILS -->
+    <script src="utils/router.lua" type="server" />
+    <script src="utils/json.lua" type="server" />
+    <script src="utils/server.lua" type="server" />
+    <script src="utils/client.lua" type="client" />
+    <script src="utils/shared.lua" type="shared" />
     
     <!-- ROUTES -->
     <script src="business/elements.lua" type="server" />
     <script src="business/players.lua" type="server" />
     <script src="business/vehicles.lua" type="server" />
     
+    <!-- HTML files -->
     <html src="index.html" />
     <html src="v1" />
     
-    <export function="getFuncMapping" http="true" />
     <export function="toOrderedJSON" http="true" />
-    
-    <!-- exports -->
-    <export api="true" function="getPlayers" http="true"></export>
-    <export api="true" function="kick" http="true"></export>
-    <export api="true" function="ban" http="true"></export>
-    <export api="true" function="updatePlayer" http="true"></export>
-    <export api="true" function="getVehicles" http="true"></export>
-    <export api="true" function="updateVehicle" http="true"></export>
+    <export function="routerExecute" http="true" />
 </meta>

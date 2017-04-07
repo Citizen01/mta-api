@@ -43,15 +43,14 @@ end
 
 ----------------------------------------------
 
--- @API("GET", "/vehicles/{id}")
-function getVehicles( form, user )
+function getVehicles( params )
 	local _vehs = {}
-	if form.id then
-		local id = tonumber(form.id)
+	if params.id then
+		local id = tonumber(params.id)
 		if id then
 			local veh = getApiElementByID(id)
 			if veh then
-				local reason = form.reason or ""
+				local reason = params.reason or ""
 				return 200, getVehicleEntity(veh)
 			else
 				return 404, nil, "Player not found !"
@@ -66,17 +65,22 @@ function getVehicles( form, user )
 	end
 	return 200, _vehs
 end
+r:match('GET', '/vehicles', getVehicles)
+r:match('GET', '/vehicles/:id', getVehicles)
 
--- @API("PUT", "/vehicles/update/{id}")
-function updateVehicle( form, user )
-	local json = json.decode(form.json)
-	-- outputConsole(tostring(var_dump("-v", json)))
+function updateVehicle( params )
+	outputServerLog( var_dump("-v", params.json) )
+	local json = json.decode(params.json)
 
-	local id = tonumber(form.id)
+	local id = tonumber(params.id)
 	if not id then return 400, nil, "Number expected for id parameter !" end
 
 	local vehicle = getApiElementByID(id)
 	if not vehicle or getElementType(vehicle) ~= "vehicle" then return 404, nil, "Vehicle not found !" end
 
-	return updateVehicleEntity(vehicle, json)
+	if ( not updateVehicleEntity(vehicle, json) )
+		return 500, nil, "An error occured while updating the vehicle !"
+	end
+	return 200, ""
 end
+r:match('PUT', '/vehicles/:id', updateVehicle)
