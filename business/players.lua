@@ -21,7 +21,7 @@ function getPlayerEntity( player )
 		rotation = getApiElementRotation(player),
 		serial = getPlayerSerial(player),
 		skin = getElementModel(player),
-		team = (function () local t = getPlayerTeam(player); return t and getTeamName(t) end)(),
+		team = (function () local t = getPlayerTeam(player); return t and getTeamName(t) or nil end)(),
 		vehicle = (function () local v = getPedOccupiedVehicle(player); return v and getApiElementID(v) end)(),
 		version = getPlayerVersion(player),
 		wantedLevel = getPlayerWantedLevel(player),
