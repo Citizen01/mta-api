@@ -14,6 +14,7 @@ function getVehicleEntity( veh )
 		maxPassengers = getVehicleMaxPassengers(veh),
 		model = getElementModel(veh),
 		paintjob = getVehiclePaintjob(veh),
+		colors = {getVehicleColor(veh, true)},
 		passengers = (function () local p={}; for k,o in ipairs(getVehicleOccupants(veh)) do table.insert(p,getPlayerEntity(o)) end return p end)(),
 		plateText = getVehiclePlateText(veh),
 		position = getApiElementPosition(veh),
@@ -34,6 +35,7 @@ function updateVehicleEntity( veh, json )
 	if json.isFuelTankExplodable ~= nil then setVehicleFuelTankExplodable(veh, json.isFuelTankExplodable) end
 	if json.model ~= nil then setElementModel(veh, json.model) end
 	if json.paintjob ~= nil then setVehiclePaintjob(veh, json.paintjob) end
+	if json.colors ~= nil then setVehicleColor(veh, unpack(json.colors)) end
 	if json.plateText ~= nil then setVehiclePlateText(veh, json.plateText) end
 	if json.position ~= nil then setElementPosition(veh, json.position.x, json.position.y, json.position.z) end
 	if json.rotation ~= nil then setElementRotation(veh, json.rotation.x, json.rotation.y, json.rotation.z) end
@@ -53,7 +55,7 @@ function getVehicles( params )
 				local reason = params.reason or ""
 				return 200, getVehicleEntity(veh)
 			else
-				return 404, nil, "Player not found !"
+				return 404, nil, "Vehicle not found !"
 			end
 		else
 			return 400, nil, "Number expected for id parameter !"
