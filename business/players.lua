@@ -91,11 +91,12 @@ function kick( params )
 	local reason = params.reason or ""
 	local responsiblePlayer = params.account or nil -- TODO: Not used for now
 
+	local playerName = tostring(getPlayerName(player))
+
 	if not kickPlayer(player, reason) then
 		return 500, nil, "An error occured !"
 	end
 
-	local playerName = tostring(getPlayerName(player))
 	local responsibleName = tostring(getAccountName(responsiblePlayer))
 	local reason = (reason ~= "") and ("(Reason: %s)"):format(reason) or ""
 	outputServerLog("[API] "..playerName.." has been kicked by "..responsibleName..reason..".")
@@ -119,17 +120,17 @@ function ban( params )
 	local reason = params.reason or ""
 	local secs = params.secs and tonumber(params.secs) or 0
 
+	local playerName = tostring(getPlayerName(player))
 	if not banPlayer(player, isIp, isUsername, isSerial, nil, reason, secs) then
 		return 500, nil, "An error occured !"
 	end
 
-	local playerName = tostring(getPlayerName(player))
 	local responsibleName = tostring(getAccountName(params.account))
 	local time = secs == 0 and "permanently" or tostring(secs).." secs"
 	outputServerLog("[API] "..playerName.." has been banned by "..responsibleName.." ("..time..").")
 	return 200, ""
 end
-r:match('POST', '/players/ban/:id', ban)
+r:match('POST', '/players/:id/ban', ban)
 
 function updatePlayer( params, user )
 	outputServerLog( params and var_dump("-v", params) or "nil" )
