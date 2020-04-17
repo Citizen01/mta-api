@@ -10,7 +10,7 @@ function registerApiElement(elem)
 	setApiElementID(elem, _id)
 	
 	local typeName = getElementType(elem)
-	outputServerLog("[API] Registered new "..typeName.." with id ".._id..".", 0)
+	-- outputServerLog("[API] Registered new "..typeName.." with id ".._id..".", 0)
 end
 
 function unregisterApiElement(elem)
@@ -21,7 +21,7 @@ function unregisterApiElement(elem)
 	removeElementData(elem, "api_id")
 	
 	local typeName = getElementType(elem)
-	outputServerLog("[API] Unregistered "..typeName.." with id "..id..".", 0)
+	-- outputServerLog("[API] Unregistered "..typeName.." with id "..id..".", 0)
 end
 
 function setApiElementID(elem, id)
@@ -37,7 +37,7 @@ function getApiElementByID(id)
 	return _elements[id] or false
 end
 
-addEventHandler("onResourceStart", root, function()
+addEventHandler("onResourceStart", resourceRoot, function()
 	for k, p in ipairs(getElementsByType("player")) do
 		registerApiElement(p)
 	end
@@ -47,8 +47,11 @@ addEventHandler("onResourceStart", root, function()
 end)
 
 addEventHandler("onResourceStop", resourceRoot, function()
-	for k, elem in ipairs(_elements) do
-		unregisterApiElement(elem)
+	for k, p in ipairs(getElementsByType("player")) do
+		unregisterApiElement(p)
+	end
+	for k, v in ipairs(getElementsByType("vehicle")) do
+		unregisterApiElement(v)
 	end
 end)
 
