@@ -97,13 +97,13 @@ local Router = {}
 
 function Router:resolve(method, path, ...)
   local node   = self._tree[method]
-  if not node then return nil, ("Unknown method: %s"):format(method) end
+  if not node then return nil, ("Unknown method: %s"):format(tostring(method)) end
   return resolve(path, node, merge_params(...))
 end
 
 function Router:execute(method, path, ...)
   local f,params = self:resolve(method, path, ...)
-  if not f then return nil, ('Could not resolve %s %s - %s'):format(method, path, params) end
+  if not f then return nil, ('Could not resolve %s %s - %s'):format(tostring(method), tostring(path), tostring(params)) end
   return true, f(params)
 end
 
@@ -131,5 +131,3 @@ local router_mt = { __index = Router }
 router.new = function()
   return setmetatable({ _tree = {} }, router_mt)
 end
-outputServerLog( "router.new defined" )
-return router
