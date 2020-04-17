@@ -11,7 +11,7 @@ local function routerExecute(...)
 end
 
 local function sendResponse(code, result)
-	httpSetResponseHeader("Content-Type", "application/json")
+	httpSetResponseHeader("content-type", "application/json")
 	httpWrite( result )
 end
 
